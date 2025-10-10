@@ -3,10 +3,19 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'author',
-		'name',
+		'title',
 		'publisher',
 		'yearOfPublishing'
 	],
 	#category : 'Books',
 	#package : 'Books'
 }
+
+{ #category : 'initialization' }
+Book >> initialize [
+    super initialize.
+    author := ''.
+    title := ''.
+    publisher := ''.
+    yearOfPublishing := 0.
+]
