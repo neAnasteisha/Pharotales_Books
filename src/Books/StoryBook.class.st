@@ -45,8 +45,8 @@ StoryBook >> denserThan: anotherBook [
 
 { #category : 'statistics' }
 StoryBook >> illustrationDensity [
-    pages = 0 ifTrue: [ ^ 0 ].
-    ^ (illustrations / pages) * 100
+	pages = 0 ifTrue: [ ^ 0 ].
+	^ illustrations / pages
 
 ]
 
