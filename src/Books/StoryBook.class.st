@@ -15,19 +15,44 @@ Class {
 }
 
 { #category : 'instance creation' }
-StoryBook class >> newWithAuthor: anAuthor title: aTitle publisher: aPublisher year: aYear pages: p illustrations: illus [ [
-
-	^ self basicNew base: ( FairyTale newWithAuthor: anAuthor title: aTitle publisher:  aPublisher year: aYear);
-		pages: p;
-		illustrations: illus
+StoryBook class >> minimalIllustrations [
+	^0.
 ]
+
+{ #category : 'instance creation' }
+StoryBook class >> minimalPages [
+	^0.
+]
+
+{ #category : 'instance creation' }
+StoryBook class >> newWithAuthor: anAuthor title: aTitle publisher: aPublisher year: aYear pages: aPages illustrations: aIllustrations [
+	| obj safePages safeIllustrations |
+
+	safePages := aPages max: self minimalPages.
+	safeIllustrations := aIllustrations max: self minimalIllustrations.
+
+	obj := self basicNew.
+	obj
+		author: anAuthor;
+		title: aTitle;
+		publisher: aPublisher;
+		publicationYear: aYear;
+		pages: safePages;
+		illustrations: safeIllustrations.
+	^ obj
+
 ]
 
 { #category : 'instance creation' }
 StoryBook class >> pages: pagesCount illustrations: illustrationsCount [
-    ^ self new
-        pages: pagesCount;
-        illustrations: illustrationsCount.
+	| safePages safeIllustrations |
+	
+	safePages := pagesCount max: self class minimalPages.
+	safeIllustrations := illustrationsCount max: self class minimalIllustrations.
+
+	^ self new
+		pages: safePages;
+		illustrations: safeIllustrations.
 
 ]
 

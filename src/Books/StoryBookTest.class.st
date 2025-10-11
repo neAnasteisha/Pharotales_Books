@@ -72,6 +72,17 @@ StoryBookTest >> testInitialize [
 ]
 
 { #category : 'tests' }
+StoryBookTest >> testMinimalIllustrations [
+	self assert: StoryBook minimalIllustrations equals: 0.
+]
+
+{ #category : 'tests' }
+StoryBookTest >> testMinimalPages [
+	self assert: StoryBook minimalPages equals: 0.
+
+]
+
+{ #category : 'tests' }
 StoryBookTest >> testMoreIllustratedThan [
 	| b1 b2 |
 	b1 := StoryBook new.
