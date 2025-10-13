@@ -23,6 +23,6 @@ _"Every object has a story"_
 Щоб завантажити проєкт виконайте:
 
     Metacello new 
-  	  baseline: 'Pharotales_Books';
-  	  repository: 'https://github.com/neAnasteisha/Pharotales_Books/src';
-  	  load
+      baseline: 'Pharotales_Books';
+      repository: 'github://neAnasteisha/Pharotales_Books/src';
+      load.
