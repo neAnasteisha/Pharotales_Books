@@ -1,0 +1,162 @@
+"Якщо програма зупиняється на моменті  VORepository або setupInMemory, тоді спробуйте запустити у новому playground ці рядки і тоді попробуйте наново:
+
+Metacello new
+    repository: 'github://pharo-nosql/voyage/mc';
+    baseline: 'Voyage';
+    load: 'memory tests'.
+
+"
+
+
+"Очищення бази даних"
+VORepository setRepository: nil.
+repo := FairyTaleDBRepo setupInMemory.
+
+"Ініціалізація бази даних in-memory"
+repo := FairyTaleDBRepo current.
+Transcript show: 'Репозиторій створено: ', repo class name; cr.
+
+"Створення об'єктів для збереження"
+Transcript cr; show: 'Створення об''єктів:'; cr.
+
+book1 := StoryBook new
+    author: 'Редьярд Кіплінг';
+    title: 'Книга джунглів';
+    publisher: 'Класика';
+    publicationYear: 1894;
+    pages: 180;
+    illustrations: 25;
+    yourself.
+
+book2 := StoryBook new
+    author: 'Ганс Крістіан Андерсен';
+    title: 'Снігова королева';
+    publisher: 'Дитяча література';
+    publicationYear: 1844;
+    pages: 95;
+    illustrations: 40;
+    yourself.
+
+book3 := StoryBook new
+    author: 'Брати Грімм';
+    title: 'Білосніжка';
+    publisher: 'Казкова книга';
+    publicationYear: 1812;
+    pages: 120;
+    illustrations: 30;
+    yourself.
+
+tale1 := TaleCollection new
+    author: 'Ганс Крістіан Андерсен';
+    title: 'Гидке каченя';
+    publisher: 'Збірник';
+    publicationYear: 1852;
+    pagesPerVolume: #(120 95 140);
+    yourself.
+
+tale2 := TaleCollection new
+    author: 'Шарль Перро';
+    title: 'Попелюшка';
+    publisher: 'Класика';
+    publicationYear: 1697;
+    pagesPerVolume: #(250);
+    yourself.
+
+Transcript show: 'Створено 3 StoryBook та 2 TaleCollection'; cr.
+
+"(Продемонструйте зберігання створених обʼєктів до бази даних)
+1. Збереження об'єктів до бази даних"
+Transcript cr; show: 'Збереження до бази даних:'; cr.
+
+book1 save.
+Transcript show: 'Книгу ', book1 title, ' збережено'; cr.
+
+book2 save.
+Transcript show: 'Книгу ', book2 title, ' збережено'; cr.
+
+book3 save.
+Transcript show: 'Книгу ', book3 title, ' збережено'; cr.
+
+tale1 save.
+Transcript show: 'Казку ', tale1 title, ' збережено'; cr.
+
+tale2 save.
+Transcript show: 'Казку ', tale2 title, ' збережено'; cr.
+
+Transcript cr; show: 'Запити до бази даних:'; cr.
+Transcript cr; show: 'Запит selectAll:'; cr.
+
+allStoryBooks := StoryBook selectAll.
+Transcript show: 'StoryBook: ', allStoryBooks size printString; cr.
+allStoryBooks do: [:book | 
+    Transcript show: '  - ', book title, ' by ', book author; cr].
+
+allTaleCollections := TaleCollection selectAll.
+Transcript show: 'TaleCollection: ', allTaleCollections size printString; cr.
+allTaleCollections do: [:tale | 
+    Transcript show: '  - ', tale title, ' (кількість томів: ', tale volumes printString, ')'; cr].
+
+Transcript cr; show: 'Запит selectOne:'; cr.
+
+"Здійснює пошук за назвою"
+foundBook := StoryBook selectOne: [:each | each title = 'Снігова королева'].
+foundBook ifNotNil: [
+    Transcript show: 'Книга: ', foundBook title; cr.
+    Transcript show: '  Автор: ', foundBook author; cr.
+    Transcript show: '  Сторінок: ', foundBook pages printString; cr.
+    Transcript show: '  Ілюстрацій: ', foundBook illustrations printString; cr.
+] ifNil: [
+    Transcript show: 'Книгу не знайдено'; cr.
+].
+
+Transcript cr; show: 'Запит selectOne: для TaleCollection'; cr.
+
+foundTale := TaleCollection selectOne: [:each | each author includesSubstring: 'Андерсен'].
+foundTale ifNotNil: [
+    Transcript show: 'Збірник: ', foundTale title; cr.
+    Transcript show: '  Автор: ', foundTale author; cr.
+    Transcript show: '  Томів: ', foundTale volumes printString; cr.
+    Transcript show: '  Всього сторінок: ', foundTale totalPages printString; cr.
+] ifNil: [
+    Transcript show: 'Збірник не знайдено'; cr.
+].
+
+Transcript cr; show: 'Статистика бази даних:'; cr.
+
+totalStoryBooks := StoryBook selectAll size.
+totalTaleCollections := TaleCollection selectAll size.
+totalPages := (StoryBook selectAll collect: #pages) sum.
+totalVolumes := (TaleCollection selectAll collect: #volumes) sum.
+
+Transcript show: 'Всього об''єктів у базі даних:'; cr.
+Transcript show: '  StoryBook: ', totalStoryBooks printString; cr.
+Transcript show: '  TaleCollection: ', totalTaleCollections printString; cr.
+Transcript show: '  Разом: ', (totalStoryBooks + totalTaleCollections) printString; cr.
+Transcript show: '  Сторінок (StoryBook): ', totalPages printString; cr.
+
+Transcript show: '  Томів (TaleCollection): ', totalVolumes printString; cr.
+
+"(Продемонструйте завантаження з бази даних)
+2. Завантаження з бази даних"
+Transcript cr; show: 'Завантаження з бази даних:'; cr.
+
+"Спершу потрібно очистити локальні змінні"
+book1 := nil.
+book2 := nil.
+book3 := nil.
+tale1 := nil.
+tale2 := nil.
+
+Transcript show: 'Локальні змінні очищено'; cr; cr.
+
+Transcript show: 'Завантаження StoryBook:'; cr.
+loadedBooks := StoryBook selectAll.
+Transcript show: 'Книги StoryBook: ', loadedBooks size printString; cr.
+loadedBooks do: [:book | 
+    Transcript show: '  - ', book title, ' (', book pages printString, ' стор.)'; cr].
+
+Transcript cr; show: 'Завантаження TaleCollection:'; cr.
+loadedTales := TaleCollection selectAll.
+Transcript show: 'Казки TaleCollection: ', loadedTales size printString; cr.
+loadedTales do: [:tale | 
+    Transcript show: '  - ', tale title, ' (', tale volumes printString, ' томів)'; cr].
