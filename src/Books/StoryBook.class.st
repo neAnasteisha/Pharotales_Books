@@ -14,11 +14,6 @@ Class {
 	#package : 'Books'
 }
 
-{ #category : 'testing' }
-StoryBook class >> isVoyageRoot [
-    ^ true.
-]
-
 { #category : 'instance creation' }
 StoryBook class >> minimalIllustrations [
 	^0.

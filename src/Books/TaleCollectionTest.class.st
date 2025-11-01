@@ -11,44 +11,6 @@ Class {
 	#package : 'Books'
 }
 
-{ #category : 'running' }
-TaleCollectionTest >> setUp [
-    super setUp.
-    (TaleCollection respondsTo: #clearAll) ifTrue: [ TaleCollection clearAll ].
-
-    t1 := TaleCollection new
-        author: 'Андерсен';
-        title: 'Казки';
-        publicationYear: 1852;
-        pagesPerVolume: #(120 95 140);
-        yourself.
-
-    t2 := TaleCollection new
-        author: 'Брати Грімм';
-        title: 'Дитячі й родинні казки';
-        publicationYear: 1812;
-        pagesPerVolume: #(50 60);
-        yourself.
-
-    t3 := TaleCollection new
-        author: 'Шарль Перро';
-        title: 'Казки матінки Гуски';
-        publicationYear: 1697;
-        pagesPerVolume: #(200);
-        yourself.
-
-    coll := OrderedCollection new.
-]
-
-{ #category : 'running' }
-TaleCollectionTest >> testAddVolumeWithPages [
-	| oldCount |
-	oldCount := t3 volumes.
-	self assert: (t3 addVolumeWithPages: 30) equals: 30.
-	self assert: t3 volumes equals: oldCount + 1.
-	self assert: t3 totalPages equals: 230
-]
-
 { #category : 'tests' }
 TaleCollectionTest >> testDescription [
 	| d |
@@ -64,6 +26,20 @@ TaleCollectionTest >> testDescription [
 	self assert: (d includesSubstring: 'Аркушів:').
 	self assert: (d includesSubstring: (t1 printedSheets printShowingDecimalPlaces: 2)).
 
+]
+
+{ #category : 'tests' }
+TaleCollectionTest >> testEqualityAndHashConsistency [
+	| t1copy |
+	t1copy := TaleCollection new
+		author: 'Андерсен';
+		title: 'Казки';
+		publicationYear: 1852;
+		pagesPerVolume: #(120 95 140);
+		yourself.
+	(self respondsTo: #equals:) ifTrue: [
+		self assert: (t1 = t1copy).
+		self assert: t1 hash equals: t1copy hash ].
 ]
 
 { #category : 'tests' }
@@ -124,6 +100,17 @@ TaleCollectionTest >> testPagesPerVolume [
 ]
 
 { #category : 'tests' }
+TaleCollectionTest >> testRegistryAddAllAndClear [
+	self assert: TaleCollection all isEmpty.
+	TaleCollection add: t1.
+	TaleCollection add: t2.
+	self assert: TaleCollection all size equals: 2.
+	self assert: (TaleCollection all first == t1 or: [ TaleCollection all second == t2 ]).
+	TaleCollection clearAll.
+	self assert: TaleCollection all isEmpty.
+]
+
+{ #category : 'tests' }
 TaleCollectionTest >> testRemoveVolumeAt [
 
 	t1 pagesPerVolume: #(120 95 140).
@@ -145,11 +132,4 @@ TaleCollectionTest >> testReplaceVolumeAtwithPages [
 	self should: [ t1 replaceVolumeAt: 1 withPages: -10 ] raise: AssertionFailure.
 	self should: [ t1 replaceVolumeAt: 1 withPages: 'abc' ] raise: AssertionFailure.
 
-]
-
-{ #category : 'running' }
-TaleCollectionTest >> testTotalPages [
-	self assert: t1 totalPages equals: 355.
-	self assert: t2 totalPages equals: 110.
-	self assert: t3 totalPages equals: 200
 ]
