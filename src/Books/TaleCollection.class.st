@@ -38,6 +38,11 @@ TaleCollection class >> ensureAll [
 
 ]
 
+{ #category : 'testing' }
+TaleCollection class >> isVoyageRoot [
+    ^ true
+]
+
 { #category : 'as yet unclassified' }
 TaleCollection class >> listToTranscript [
 	self ensureAll.
