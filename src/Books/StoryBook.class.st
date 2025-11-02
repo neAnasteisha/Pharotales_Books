@@ -61,6 +61,18 @@ StoryBook class >> pages: pagesCount illustrations: illustrationsCount [
 
 ]
 
+{ #category : 'instance creation' }
+StoryBook class >> title: aTitle author: anAuthor [ 
+	^ self new
+		title: aTitle;
+		author: anAuthor;
+		publisher: '';
+		publicationYear: Date today year;
+		pages: 0;
+		illustrations: 0;
+		yourself
+]
+
 { #category : 'comparing' }
 StoryBook >> < anotherBook [
     ^ pages < anotherBook pages

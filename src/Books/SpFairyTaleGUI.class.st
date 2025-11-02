@@ -23,8 +23,7 @@ SpFairyTaleGUI class >> open [
 
 { #category : 'initialization' }
 SpFairyTaleGUI >> addBook [
-"Додає інформацію про книгу"
-	| author title publisher year tale |
+	| author title publisher year tale repo |
 	
 	author := authorInput text ifEmpty: [ ^ self inform: 'Enter the author!' ].
 	title := titleInput text ifEmpty: [ ^ self inform: 'Enter the title!' ].
@@ -39,12 +38,14 @@ SpFairyTaleGUI >> addBook [
 		title: title
 		publisher: publisher
 		year: year.
-	
-	TaleCollection add: tale.
-	
+
+	repo := FairyTaleDBRepo current.
+	repo save: tale.
+
 	self clearInputs.
 	self refreshList.
 	self inform: 'The book was added!'
+
 ]
 
 { #category : 'initialization' }
@@ -101,6 +102,17 @@ SpFairyTaleGUI >> defaultLayout [
 ]
 
 { #category : 'initialization' }
+SpFairyTaleGUI >> deleteSelected [
+	| selected repo |
+	selected := bookList selectedItem ifNil: [ ^ self inform: 'Select a book first!' ].
+	repo := FairyTaleDBRepo current.
+	repo remove: selected.
+	self refreshList.
+	self inform: 'The book was deleted.'
+
+]
+
+{ #category : 'initialization' }
 SpFairyTaleGUI >> initializePresenters [
 "Візуальні компоненти"
 	authorInput := self newTextInput.
@@ -138,7 +150,19 @@ SpFairyTaleGUI >> initializeWindow: aWindowPresenter [
 
 { #category : 'initialization' }
 SpFairyTaleGUI >> refreshList [
-"Оновлює список казок"
-	TaleCollection ensureAll.
-	bookList items: TaleCollection all asOrderedCollection
+	bookList items: FairyTaleDBRepo current allItems
+
+]
+
+{ #category : 'initialization' }
+SpFairyTaleGUI >> showDetails: aTale [
+	| text |
+	aTale isNil ifTrue: [ ^ detailsText text: '' ].
+
+	(aTale isKindOf: TaleCollection)
+		ifTrue: [ ^ detailsText text: aTale fullReportString ].
+
+	text := String streamContents: [ :s | aTale printOn: s ].
+	detailsText text: text
+
 ]

@@ -76,6 +76,12 @@ FairyTale >> initialize [
 	publicationYear := Date today year.
 ]
 
+{ #category : 'accessing' }
+FairyTale >> isVoyageRoot [
+	^ true
+
+]
+
 { #category : 'printing' }
 FairyTale >> printOn: aStream [
     aStream
