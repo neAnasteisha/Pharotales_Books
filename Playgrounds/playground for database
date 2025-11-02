@@ -7,9 +7,8 @@ Metacello new
 
 "
 
-
 "Очищення бази даних"
-VORepository setRepository: nil.
+"VORepository setRepository: nil."
 repo := FairyTaleDBRepo setupInMemory.
 
 "Ініціалізація бази даних in-memory"
@@ -68,30 +67,33 @@ Transcript show: 'Створено 3 StoryBook та 2 TaleCollection'; cr.
 1. Збереження об'єктів до бази даних"
 Transcript cr; show: 'Збереження до бази даних:'; cr.
 
-book1 save.
+repo save: book1.
 Transcript show: 'Книгу ', book1 title, ' збережено'; cr.
 
-book2 save.
+repo save: book2.
 Transcript show: 'Книгу ', book2 title, ' збережено'; cr.
 
-book3 save.
+repo save: book3.
 Transcript show: 'Книгу ', book3 title, ' збережено'; cr.
 
-tale1 save.
+repo save: tale1.
 Transcript show: 'Казку ', tale1 title, ' збережено'; cr.
 
-tale2 save.
+repo save: tale2.
 Transcript show: 'Казку ', tale2 title, ' збережено'; cr.
 
 Transcript cr; show: 'Запити до бази даних:'; cr.
 Transcript cr; show: 'Запит selectAll:'; cr.
 
-allStoryBooks := StoryBook selectAll.
+"Отримуємо всі об'єкти з репозиторію"
+allItems := repo allItems.
+
+allStoryBooks := allItems select: [ :item | item isKindOf: StoryBook ].
 Transcript show: 'StoryBook: ', allStoryBooks size printString; cr.
 allStoryBooks do: [:book | 
     Transcript show: '  - ', book title, ' by ', book author; cr].
 
-allTaleCollections := TaleCollection selectAll.
+allTaleCollections := allItems select: [ :item | item isKindOf: TaleCollection ].
 Transcript show: 'TaleCollection: ', allTaleCollections size printString; cr.
 allTaleCollections do: [:tale | 
     Transcript show: '  - ', tale title, ' (кількість томів: ', tale volumes printString, ')'; cr].
@@ -99,7 +101,7 @@ allTaleCollections do: [:tale |
 Transcript cr; show: 'Запит selectOne:'; cr.
 
 "Здійснює пошук за назвою"
-foundBook := StoryBook selectOne: [:each | each title = 'Снігова королева'].
+foundBook := allStoryBooks detect: [:each | each title = 'Снігова королева'] ifNone: [ nil ].
 foundBook ifNotNil: [
     Transcript show: 'Книга: ', foundBook title; cr.
     Transcript show: '  Автор: ', foundBook author; cr.
@@ -111,7 +113,7 @@ foundBook ifNotNil: [
 
 Transcript cr; show: 'Запит selectOne: для TaleCollection'; cr.
 
-foundTale := TaleCollection selectOne: [:each | each author includesSubstring: 'Андерсен'].
+foundTale := allTaleCollections detect: [:each | each author includesSubstring: 'Андерсен'] ifNone: [ nil ].
 foundTale ifNotNil: [
     Transcript show: 'Збірник: ', foundTale title; cr.
     Transcript show: '  Автор: ', foundTale author; cr.
@@ -123,10 +125,10 @@ foundTale ifNotNil: [
 
 Transcript cr; show: 'Статистика бази даних:'; cr.
 
-totalStoryBooks := StoryBook selectAll size.
-totalTaleCollections := TaleCollection selectAll size.
-totalPages := (StoryBook selectAll collect: #pages) sum.
-totalVolumes := (TaleCollection selectAll collect: #volumes) sum.
+totalStoryBooks := allStoryBooks size.
+totalTaleCollections := allTaleCollections size.
+totalPages := allStoryBooks ifEmpty: [ 0 ] ifNotEmpty: [ :books | (books collect: #pages) sum ].
+totalVolumes := allTaleCollections ifEmpty: [ 0 ] ifNotEmpty: [ :tales | (tales collect: #volumes) sum ].
 
 Transcript show: 'Всього об''єктів у базі даних:'; cr.
 Transcript show: '  StoryBook: ', totalStoryBooks printString; cr.
@@ -150,13 +152,13 @@ tale2 := nil.
 Transcript show: 'Локальні змінні очищено'; cr; cr.
 
 Transcript show: 'Завантаження StoryBook:'; cr.
-loadedBooks := StoryBook selectAll.
+loadedBooks := repo allItems select: [ :item | item isKindOf: StoryBook ].
 Transcript show: 'Книги StoryBook: ', loadedBooks size printString; cr.
 loadedBooks do: [:book | 
     Transcript show: '  - ', book title, ' (', book pages printString, ' стор.)'; cr].
 
 Transcript cr; show: 'Завантаження TaleCollection:'; cr.
-loadedTales := TaleCollection selectAll.
+loadedTales := repo allItems select: [ :item | item isKindOf: TaleCollection ].
 Transcript show: 'Казки TaleCollection: ', loadedTales size printString; cr.
 loadedTales do: [:tale | 
     Transcript show: '  - ', tale title, ' (', tale volumes printString, ' томів)'; cr].
