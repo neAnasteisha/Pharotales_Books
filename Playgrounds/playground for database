@@ -1,14 +1,4 @@
-"Якщо програма зупиняється на моменті  VORepository або setupInMemory, тоді спробуйте запустити у новому playground ці рядки і тоді попробуйте наново:
-
-Metacello new
-    repository: 'github://pharo-nosql/voyage/mc';
-    baseline: 'Voyage';
-    load: 'memory tests'.
-
-"
-
 "Очищення бази даних"
-"VORepository setRepository: nil."
 repo := FairyTaleDBRepo setupInMemory.
 
 "Ініціалізація бази даних in-memory"
