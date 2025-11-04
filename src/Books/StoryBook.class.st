@@ -74,12 +74,6 @@ StoryBook class >> title: aTitle author: anAuthor [
 ]
 
 { #category : 'comparing' }
-StoryBook >> < anotherBook [
-    ^ pages < anotherBook pages
-
-]
-
-{ #category : 'comparing' }
 StoryBook >> denserThan: anotherBook [
     ^ self illustrationDensity > anotherBook illustrationDensity
 
@@ -137,4 +131,9 @@ StoryBook >> printOn: aStream [
         nextPutAll: illustrations asString;
         nextPutAll: ' illustrations.'.
 
+]
+
+{ #category : 'accessing' }
+StoryBook >> totalPages [
+	^ self pages + self illustrations.
 ]

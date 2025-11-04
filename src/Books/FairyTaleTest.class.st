@@ -22,34 +22,6 @@ FairyTaleTest >> testAccessors [
 ]
 
 { #category : 'tests' }
-FairyTaleTest >> testComparison [
-	| tale1 tale2 tale3 |
-	
-	tale1 := FairyTale new.
-	tale1 author: 'Andersen'.
-	tale1 title: 'The Snow Queen'.
-	tale1 publisher: 'Classic Press'.
-	tale1 publicationYear: 1844.
-
-	tale2 := FairyTale new.
-	tale2 author: 'Andersen'.
-	tale2 title: 'The Snow Queen'.
-	tale2 publisher: 'Classic Press'.
-	tale2 publicationYear: 1844.
-
-	tale3 := FairyTale new.
-	tale3 author: 'Andersen'.
-	tale3 title: 'The Wild Swans'.
-	tale3 publisher: 'Classic Press'.
-	tale3 publicationYear: 1838.
-
-	self assert: (tale1 = tale2).       "перевірка рівності"
-	self assert: (tale3 < tale1).       "перевірка порівняння за роком"
-	self deny: (tale1 < tale3).         "обернена перевірка"
-
-]
-
-{ #category : 'tests' }
 FairyTaleTest >> testCreation [
     | tale |
     tale := FairyTale newWithAuthor: 'Andersen'
@@ -61,22 +33,6 @@ FairyTaleTest >> testCreation [
     self assert: tale title equals: 'The Snow Queen'.
     self assert: tale publisher equals: 'Classic Press'.
     self assert: tale publicationYear equals: 1844.
-
-]
-
-{ #category : 'tests' }
-FairyTaleTest >> testEquality [
-    | t1 t2 |
-    t1 := FairyTale newWithAuthor: 'Andersen'
-                        title: 'The Snow Queen'
-                        publisher: 'Classic Press'
-                        year: 1844.
-    t2 := FairyTale newWithAuthor: 'Andersen'
-                        title: 'The Snow Queen'
-                        publisher: 'Classic Press'
-                        year: 1844.
-
-    self assert: (t1 = t2) equals: true.
 
 ]
 
@@ -94,7 +50,7 @@ FairyTaleTest >> testInitialize [
 
 { #category : 'tests' }
 FairyTaleTest >> testMinimalYear [
-    self assert: FairyTale minimalYear equals: 1000.
+    self assert: FairyTale minimalYear equals: 1574.
 
 ]
 

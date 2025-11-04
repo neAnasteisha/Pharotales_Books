@@ -19,41 +19,34 @@ Class {
 
 { #category : 'globals' }
 FairyTale class >> minimalYear [
-	^1000.
+	^1574.
 ]
 
 { #category : 'instance creation' }
 FairyTale class >> newWithAuthor: anAuthor title: aTitle publisher: aPublisher year: aYear [
-	| obj yearValue |
-	yearValue := aYear max: FairyTale minimalYear.
+	| obj |
 	obj := self basicNew.
 	obj
 		author: anAuthor;
 		title: aTitle;
 		publisher: aPublisher;
-		publicationYear: yearValue.
+		publicationYear: aYear.
 		^ obj
 ]
 
 { #category : 'comparing' }
 FairyTale >> < anObject [
-    (anObject isKindOf: FairyTale)
-        ifTrue: [^ self publicationYear < anObject publicationYear].
-    ^ false
+    ^ self totalPages < anObject totalPages.
 ]
 
 { #category : 'comparing' }
 FairyTale >> = anObject [
-    ^ (anObject isKindOf: FairyTale)
-        ifTrue: [self title = anObject title]
-        ifFalse: [false].
+    ^ self totalPages = anObject totalPages.
 ]
 
 { #category : 'comparing' }
 FairyTale >> > anObject [
-    (anObject isKindOf: FairyTale)
-        ifTrue: [^ self publicationYear > anObject publicationYear].
-    ^ false
+    ^ anObject < self
 ]
 
 { #category : 'accessing' }
@@ -74,6 +67,7 @@ FairyTale >> initialize [
 	title := ''.
 	publisher := ''.
 	publicationYear := Date today year.
+	
 ]
 
 { #category : 'accessing' }
@@ -85,9 +79,17 @@ FairyTale >> isVoyageRoot [
 { #category : 'printing' }
 FairyTale >> printOn: aStream [
     aStream
-        nextPutAll: '"' , title , '"';
-        nextPutAll: ' by ' , author;
-        nextPutAll: ' (' , publisher , ', ' , publicationYear asString , ')'.
+        nextPut: $";
+        nextPutAll: title;
+        nextPut: $";
+        nextPutAll: ' by ';
+        nextPutAll: author;
+        nextPutAll: ' (';
+        nextPutAll: publisher;
+        nextPutAll: ', ';
+        nextPutAll: publicationYear asString;
+        nextPut: $).
+
 
 ]
 
@@ -98,9 +100,9 @@ FairyTale >> publicationYear [
 ]
 
 { #category : 'accessing' }
-FairyTale >> publicationYear: anObject [
+FairyTale >> publicationYear: aNumber [
 
-	publicationYear := anObject max: self class minimalYear.
+	publicationYear := aNumber max: self class minimalYear.
 ]
 
 { #category : 'accessing' }
@@ -110,9 +112,9 @@ FairyTale >> publisher [
 ]
 
 { #category : 'accessing' }
-FairyTale >> publisher: anObject [
+FairyTale >> publisher: aString [
 
-	publisher := anObject
+	publisher := aString
 ]
 
 { #category : 'accessing' }
@@ -122,7 +124,12 @@ FairyTale >> title [
 ]
 
 { #category : 'accessing' }
-FairyTale >> title: anObject [
+FairyTale >> title: aString [
 
-	title := anObject
+	title := aString
+]
+
+{ #category : 'accessing' }
+FairyTale >> totalPages [
+	self subclassResponsibility.
 ]
