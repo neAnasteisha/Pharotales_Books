@@ -1,4 +1,4 @@
-<img width="1900" height="767" alt="image" src="https://github.com/user-attachments/assets/3e8f746d-b3b1-49f7-adc6-96fd2e9fd90d" />**FairyTales Library** by Pharotales 
+FairyTales Library by Pharotales
 
 _"Every object has a story"_ 
 
