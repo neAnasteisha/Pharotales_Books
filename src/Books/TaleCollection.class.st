@@ -52,12 +52,15 @@ TaleCollection class >> listToTranscript [
 
 { #category : 'instance creation' }
 TaleCollection class >> newFromDialog [
-	| author title year pagesStr pages tale |
+	| author title publisher year pagesStr pages tale |
 	author := UIManager default request: 'Автор:'.
 	author isNil ifTrue: [ ^ nil ].
 
 	title := UIManager default request: 'Назва:'.
 	title isNil ifTrue: [ ^ nil ].
+
+	publisher := UIManager default request: 'Видавництво / видавець:' initialAnswer: ''.
+	publisher isNil ifTrue: [ ^ nil ].
 
 	year := UIManager default request: 'Рік видання:' initialAnswer: ''.
 	year isNil ifTrue: [ ^ nil ].
@@ -75,6 +78,7 @@ TaleCollection class >> newFromDialog [
 	tale := self new
 		author: author;
 		title: title;
+		publisher: publisher;
 		publicationYear: year;
 		pagesPerVolume: pages;
 		yourself.
@@ -83,7 +87,10 @@ TaleCollection class >> newFromDialog [
 	tale printFullReport.
 
 	UIManager default inform:
-		'Додано: ', tale title, ' (томів: ', tale volumes printString,
+		'Додано: ', tale title,
+		' — ', tale author,
+		' (видавництво: ', tale publisher,
+		'; томів: ', tale volumes printString,
 		', стор.: ', tale totalPages printString, ')'.
 
 	^ tale

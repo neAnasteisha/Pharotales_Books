@@ -51,7 +51,7 @@ TaleCollectionTest >> testAddVolumeWithPages [
 
 ]
 
-{ #category : 'tests' }
+{ #category : 'running' }
 TaleCollectionTest >> testDescription [
 	| d |
 	d := t1 description.
@@ -65,7 +65,6 @@ TaleCollectionTest >> testDescription [
 	self assert: (d includesSubstring: 'Загальний обсяг: ', t1 totalPages printString).
 	self assert: (d includesSubstring: 'Аркушів:').
 	self assert: (d includesSubstring: (t1 printedSheets printShowingDecimalPlaces: 2)).
-
 
 ]
 
@@ -94,7 +93,7 @@ TaleCollectionTest >> testFullReportString [
 	self assert: (r includesSubstring: String cr).
 ]
 
-{ #category : 'tests' }
+{ #category : 'running' }
 TaleCollectionTest >> testPagesBreakdownString [
 	| expected result |
 
@@ -113,7 +112,7 @@ TaleCollectionTest >> testPagesBreakdownString [
 	self assert: (result includesSubstring: ', ').
 ]
 
-{ #category : 'tests' }
+{ #category : 'running' }
 TaleCollectionTest >> testPagesPerVolume [
 	"Перевіряє, що метод приймає лише позитивні цілі числа і правильно зберігає їх."
 	
@@ -125,7 +124,7 @@ TaleCollectionTest >> testPagesPerVolume [
 
 ]
 
-{ #category : 'tests' }
+{ #category : 'running' }
 TaleCollectionTest >> testRemoveVolumeAt [
 
 	t1 pagesPerVolume: #(120 95 140).
@@ -134,7 +133,7 @@ TaleCollectionTest >> testRemoveVolumeAt [
 	self should: [ t1 removeVolumeAt: 5 ] raise: AssertionFailure.
 ]
 
-{ #category : 'tests' }
+{ #category : 'running' }
 TaleCollectionTest >> testReplaceVolumeAtwithPages [
 
 	t1 pagesPerVolume: #(120 95 140).
@@ -145,6 +144,7 @@ TaleCollectionTest >> testReplaceVolumeAtwithPages [
 	self should: [ t1 replaceVolumeAt: 5 withPages: 200 ] raise: AssertionFailure.
 	self should: [ t1 replaceVolumeAt: 1 withPages: -10 ] raise: AssertionFailure.
 	self should: [ t1 replaceVolumeAt: 1 withPages: 'abc' ] raise: AssertionFailure.
+
 ]
 
 { #category : 'running' }
