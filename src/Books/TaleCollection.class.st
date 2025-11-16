@@ -47,7 +47,7 @@ TaleCollection class >> isVoyageRoot [
 TaleCollection class >> listToTranscript [
 	self ensureAll.
 	Transcript cr; show: '=== УСІ КНИГИ (', All size printString, ') ==='; cr.
-	All do: [ :b | b printFullReport ].
+	All do: [ :b | b printFullReport  ].
 ]
 
 { #category : 'instance creation' }
@@ -98,11 +98,6 @@ TaleCollection class >> parsePagesPerVolume: aString [
 			(n isInteger and: [ n > 0 ]) ifTrue: [ n ] ifFalse: [ 0 ] ])
 		select: [ :each | each > 0 ].
 
-]
-
-{ #category : 'accessing' }
-TaleCollection >> < aTale [
-	^ self totalPages < aTale totalPages
 ]
 
 { #category : 'accessing' }
@@ -171,9 +166,11 @@ TaleCollection >> pagesPerVolume: aCollection [
 	pagesPerVolume := aCollection asOrderedCollection.
 ]
 
-{ #category : 'accessing' }
-TaleCollection >> printFullReport [
-	Transcript cr; show: self fullReportString; cr
+{ #category : 'printing' }
+TaleCollection >> printFullReport [ 
+	Transcript cr; show: self fullReportString; cr.
+
+
 ]
 
 { #category : 'accessing' }

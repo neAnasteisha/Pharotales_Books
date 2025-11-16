@@ -49,19 +49,6 @@ StoryBook class >> newWithAuthor: anAuthor title: aTitle publisher: aPublisher y
 ]
 
 { #category : 'instance creation' }
-StoryBook class >> pages: pagesCount illustrations: illustrationsCount [
-	| safePages safeIllustrations |
-	
-	safePages := pagesCount max: self class minimalPages.
-	safeIllustrations := illustrationsCount max: self class minimalIllustrations.
-
-	^ self new
-		pages: safePages;
-		illustrations: safeIllustrations.
-
-]
-
-{ #category : 'instance creation' }
 StoryBook class >> title: aTitle author: anAuthor [ 
 	^ self new
 		title: aTitle;
@@ -71,12 +58,6 @@ StoryBook class >> title: aTitle author: anAuthor [
 		pages: 0;
 		illustrations: 0;
 		yourself
-]
-
-{ #category : 'comparing' }
-StoryBook >> < anotherBook [
-    ^ pages < anotherBook pages
-
 ]
 
 { #category : 'comparing' }
@@ -112,7 +93,7 @@ StoryBook >> initialize [
 
 { #category : 'comparing' }
 StoryBook >> moreIllustratedThan: anotherBook [
-    ^ illustrations > anotherBook illustrations
+    ^ self illustrationDensity > anotherBook illustrationDensity
 
 ]
 
@@ -130,11 +111,16 @@ StoryBook >> pages: aNumber [
 StoryBook >> printOn: aStream [
     super printOn: aStream.
     aStream
-        nextPut: Character cr;
+        cr;
         nextPutAll: 'Book has ';
-        nextPutAll: pages asString;
+        print: pages;
         nextPutAll: ' pages and ';
-        nextPutAll: illustrations asString;
+        print: illustrations;
         nextPutAll: ' illustrations.'.
 
+]
+
+{ #category : 'accessing' }
+StoryBook >> totalPages [
+	^ self pages + self illustrations.
 ]

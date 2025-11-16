@@ -41,14 +41,13 @@ TaleCollectionTest >> setUp [
 
 ]
 
-{ #category : 'tests' }
+{ #category : 'running' }
 TaleCollectionTest >> testAddVolumeWithPages [
 	| oldCount |
 	oldCount := t3 volumes.
 	self assert: (t3 addVolumeWithPages: 30) equals: 30.
 	self assert: t3 volumes equals: oldCount + 1.
 	self assert: t3 totalPages equals: 230
-
 
 ]
 
@@ -70,7 +69,7 @@ TaleCollectionTest >> testDescription [
 
 ]
 
-{ #category : 'tests' }
+{ #category : 'running' }
 TaleCollectionTest >> testFullReportString [
 	| r |
 	r := t1 fullReportString.
@@ -93,7 +92,6 @@ TaleCollectionTest >> testFullReportString [
 	self assert: (r includesSubstring: (t1 printedSheets printShowingDecimalPlaces: 2)).
 	self assert: (r includesSubstring: 'Аркушів (мінімально): ' , t1 printedSheetsCeiling printString).
 	self assert: (r includesSubstring: String cr).
-
 ]
 
 { #category : 'tests' }
@@ -149,7 +147,7 @@ TaleCollectionTest >> testReplaceVolumeAtwithPages [
 	self should: [ t1 replaceVolumeAt: 1 withPages: 'abc' ] raise: AssertionFailure.
 ]
 
-{ #category : 'tests' }
+{ #category : 'running' }
 TaleCollectionTest >> testTotalPages [
 	self assert: t1 totalPages equals: 355.
 	self assert: t2 totalPages equals: 110.

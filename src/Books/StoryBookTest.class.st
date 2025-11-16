@@ -84,15 +84,18 @@ StoryBookTest >> testMinimalPages [
 
 { #category : 'tests' }
 StoryBookTest >> testMoreIllustratedThan [
-	| b1 b2 |
-	b1 := StoryBook new.
-	b1 illustrations: 15.
+    | b1 b2 |
 
-	b2 := StoryBook new.
-	b2 illustrations: 30.
+    b1 := StoryBook new.
+    b1 illustrations: 15.
+    b1 pages: 60.
 
-	self assert: (b2 moreIllustratedThan: b1) equals: true.
-	self assert: (b1 moreIllustratedThan: b2) equals: false.
+    b2 := StoryBook new.
+    b2 illustrations: 30.
+    b2 pages: 100.
+
+    self assert: (b2 moreIllustratedThan: b1).
+    self deny: (b1 moreIllustratedThan: b2).
 
 ]
 
