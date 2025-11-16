@@ -56,9 +56,9 @@ FairyTale >> author [
 ]
 
 { #category : 'accessing' }
-FairyTale >> author: anObject [
+FairyTale >> author: aString [
 
-	author := anObject
+	author := aString
 ]
 
 { #category : 'initialization' }
