@@ -49,12 +49,6 @@ FairyTaleTest >> testInitialize [
 ]
 
 { #category : 'tests' }
-FairyTaleTest >> testMinimalYear [
-    self assert: FairyTale minimalYear equals: 1574.
-
-]
-
-{ #category : 'tests' }
 FairyTaleTest >> testPrintOn [
     | tale output |
     tale := FairyTale newWithAuthor: 'Andersen'
@@ -68,4 +62,12 @@ FairyTaleTest >> testPrintOn [
     self assert: (output includesSubstring: 'The Snow Queen') equals: true.
     self assert: (output includesSubstring: '1844') equals: true.
 
+]
+
+{ #category : 'tests' }
+FairyTaleTest >> testYearLimits [
+	| limits |
+	limits := FairyTale yearLimits.
+	self assert: limits first equals: 1574.
+	self assert: limits second equals: Date today year.
 ]

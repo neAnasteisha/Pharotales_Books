@@ -17,9 +17,9 @@ Class {
 	#package : 'Books'
 }
 
-{ #category : 'globals' }
+{ #category : 'as yet unclassified' }
 FairyTale class >> minimalYear [
-	^1574.
+^ 1574
 ]
 
 { #category : 'instance creation' }
@@ -32,6 +32,11 @@ FairyTale class >> newWithAuthor: anAuthor title: aTitle publisher: aPublisher y
 		publisher: aPublisher;
 		publicationYear: aYear.
 		^ obj
+]
+
+{ #category : 'globals' }
+FairyTale class >> yearLimits [
+	^ { 1574 . Date today year }
 ]
 
 { #category : 'comparing' }

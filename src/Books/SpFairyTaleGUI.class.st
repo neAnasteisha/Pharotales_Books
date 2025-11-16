@@ -33,7 +33,7 @@ SpFairyTaleGUI class >> open [
 
 { #category : 'initialization' }
 SpFairyTaleGUI >> addBook [
-	| author title publisher year pages illustrations tale repo isStoryBook selectedType pagesPerVolume |
+	| author title publisher year pages illustrations tale repo isStoryBook selectedType pagesPerVolume minYear maxYear|
 
 	selectedType := typeDropdown selectedItem ifNil: [ ^ self inform: 'Select the type!' ].
 
@@ -43,6 +43,16 @@ SpFairyTaleGUI >> addBook [
 
 	year := [ yearInput text asNumber ]
 		on: Error do: [ ^ self inform: 'Year must be a number!' ].
+		minYear := FairyTale yearLimits first.
+      maxYear := FairyTale yearLimits second.
+
+(year < minYear or: [ year > maxYear ]) ifTrue: [
+	^ self inform:
+		'Year must be between ', minYear printString,
+		' and ', maxYear printString,
+		'. Please enter a valid year.'
+].
+	
 
 	(selectedType = 'TaleCollection')
 		ifTrue: [
@@ -95,6 +105,7 @@ SpFairyTaleGUI >> addBook [
 	self clearInputs.
 	self refreshList.
 	self inform: 'The book was added!'.
+
 
 ]
 
@@ -235,7 +246,7 @@ SpFairyTaleGUI >> initializePresenters [
 
 	"Тип просто вибираємо – без логіки видимості"
 	typeDropdown := self newDropList.
-	typeDropdown items: #('FairyTale' 'StoryBook' 'TaleCollection').
+	typeDropdown items: #('StoryBook' 'TaleCollection').
 	typeDropdown selectItem: 'StoryBook'.
 
 	pagesInput := self newTextInput.
