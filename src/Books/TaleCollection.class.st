@@ -98,6 +98,23 @@ TaleCollection class >> newFromDialog [
 ]
 
 { #category : 'instance creation' }
+TaleCollection class >> newWithAuthor: author
+    title: title
+    publisher: publisher
+    year: year
+    pagesPerVolume: aCollection [
+
+    ^ (self new)
+        author: author;
+        title: title;
+        publisher: publisher;
+        publicationYear: year;
+        pagesPerVolume: aCollection;
+        yourself
+
+]
+
+{ #category : 'instance creation' }
 TaleCollection class >> parsePagesPerVolume: aString [
 	^ ((aString findTokens: ',; ') collect: [ :s |
 			| n |

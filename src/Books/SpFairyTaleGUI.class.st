@@ -16,6 +16,8 @@ Class {
 		'illustrationsInput',
 		'pagesRow',
 		'illustrationsRow',
+		'pagesPerVolumeInput',
+		'pagesPerVolumeRow',
 		'pagesLabel',
 		'illustrationsLabel',
 		'typeDropDown'
@@ -31,8 +33,10 @@ SpFairyTaleGUI class >> open [
 
 { #category : 'initialization' }
 SpFairyTaleGUI >> addBook [
-	| author title publisher year pages illustrations tale repo isStoryBook |
-	
+	| author title publisher year pages illustrations tale repo isStoryBook selectedType pagesPerVolume |
+
+	selectedType := typeDropdown selectedItem ifNil: [ ^ self inform: 'Select the type!' ].
+
 	author := authorInput text ifEmpty: [ ^ self inform: 'Enter the author!' ].
 	title := titleInput text ifEmpty: [ ^ self inform: 'Enter the title!' ].
 	publisher := publisherInput text ifEmpty: [ 'Secret' ].
@@ -40,28 +44,49 @@ SpFairyTaleGUI >> addBook [
 	year := [ yearInput text asNumber ]
 		on: Error do: [ ^ self inform: 'Year must be a number!' ].
 
-	isStoryBook := (typeDropdown selectedItem = 'StoryBook').
-
-	isStoryBook
+	(selectedType = 'TaleCollection')
 		ifTrue: [
-			pages := [ pagesInput text asNumber ]
-				on: Error do: [ ^ self inform: 'Pages must be a number!' ].
-			illustrations := [ illustrationsInput text asNumber ]
-				on: Error do: [ ^ self inform: 'Illustrations must be a number!' ].
-			tale := StoryBook
+			pagesPerVolume := [
+				(pagesPerVolumeInput text ifEmpty: [ ^ self inform: 'Enter pages per volumes!' ]).
+				(pagesPerVolumeInput text findTokens: ',; ')
+					collect: [ :tok | | n |
+						n := tok asNumber.
+						(n isInteger and: [ n > 0 ])
+							ifFalse: [ self error: 'Pages must be positive integers' ].
+						n ] ]
+				on: Error do: [ ^ self inform: 'Enter pages per volumes as comma-separated numbers (e.g., 120,98,145).' ].
+
+			tale := TaleCollection
 				newWithAuthor: author
 				title: title
 				publisher: publisher
 				year: year
-				pages: pages
-				illustrations: illustrations
+				pagesPerVolume: pagesPerVolume.
 		]
 		ifFalse: [
-			tale := FairyTale
-				newWithAuthor: author
-				title: title
-				publisher: publisher
-				year: year
+			isStoryBook := (selectedType = 'StoryBook').
+
+			isStoryBook
+				ifTrue: [
+					pages := [ pagesInput text asNumber ]
+						on: Error do: [ ^ self inform: 'Pages must be a number!' ].
+					illustrations := [ illustrationsInput text asNumber ]
+						on: Error do: [ ^ self inform: 'Illustrations must be a number!' ].
+					tale := StoryBook
+						newWithAuthor: author
+						title: title
+						publisher: publisher
+						year: year
+						pages: pages
+						illustrations: illustrations
+				]
+				ifFalse: [
+					tale := FairyTale
+						newWithAuthor: author
+						title: title
+						publisher: publisher
+						year: year
+				].
 		].
 
 	repo := FairyTaleDBRepo current.
@@ -82,6 +107,7 @@ SpFairyTaleGUI >> clearInputs [
 	yearInput text: ''.
 	pagesInput text: ''.
 	illustrationsInput text: ''.
+	pagesPerVolumeInput text: ''.
 ]
 
 { #category : 'initialization' }
@@ -133,6 +159,10 @@ SpFairyTaleGUI >> defaultLayout [
 			add: #illustrationsInput;
 			yourself) height: 30;
 		add: (SpBoxLayout newHorizontal
+			add: 'Pages (volumes):' width: 80;
+			add: #pagesPerVolumeInput;
+			yourself) height: 30;
+		add: (SpBoxLayout newHorizontal
 			add: #addButton;
 			add: #refreshButton;
 			add: #deleteButton;
@@ -158,9 +188,8 @@ SpFairyTaleGUI >> deleteSelected [
 
 { #category : 'initialization' }
 SpFairyTaleGUI >> initializeLayout [
+    | mainContainer topFields pagesRow illustrationsRow pagesPerVolumeRow |
 
-    | mainContainer topFields pagesRow illustrationsRow |
-    
     mainContainer := SpBoxLayout newVertical.
 
     topFields := SpBoxLayout newVertical.
@@ -169,7 +198,7 @@ SpFairyTaleGUI >> initializeLayout [
         add: (SpBoxLayout newHorizontal add:'Title:' width:80; add: titleInput; yourself);
         add: (SpBoxLayout newHorizontal add:'Publisher:' width:80; add: publisherInput; yourself);
         add: (SpBoxLayout newHorizontal add:'Year:' width:80; add: yearInput; yourself);
-        add: (SpBoxLayout newHorizontal add:'Type:' width:80; add: typeDropDown; yourself).
+        add: (SpBoxLayout newHorizontal add:'Type:' width:80; add: typeDropdown; yourself).
 
     pagesRow := SpBoxLayout newHorizontal
         add:'Pages:' width:80; add: pagesInput; yourself.
@@ -177,15 +206,20 @@ SpFairyTaleGUI >> initializeLayout [
     illustrationsRow := SpBoxLayout newHorizontal
         add:'Illustrations:' width:80; add: illustrationsInput; yourself.
 
+    pagesPerVolumeRow := SpBoxLayout newHorizontal
+        add:'Pages (volumes):' width:80; add: pagesPerVolumeInput; yourself.
+
     mainContainer
         add: topFields;
         add: pagesRow;
-        add: illustrationsRow.
+        add: illustrationsRow;
+        add: pagesPerVolumeRow.
 
     self layout: mainContainer.
 
     pagesRow name: #pagesRow.
     illustrationsRow name: #illustrationsRow.
+    pagesPerVolumeRow name: #pagesPerVolumeRow.
 
 ]
 
@@ -197,10 +231,11 @@ SpFairyTaleGUI >> initializePresenters [
 	titleInput := self newTextInput.
 	publisherInput := self newTextInput.
 	yearInput := self newTextInput.
+	pagesPerVolumeInput := self newTextInput.
 
 	"Тип просто вибираємо – без логіки видимості"
 	typeDropdown := self newDropList.
-	typeDropdown items: #('FairyTale' 'StoryBook').
+	typeDropdown items: #('FairyTale' 'StoryBook' 'TaleCollection').
 	typeDropdown selectItem: 'StoryBook'.
 
 	pagesInput := self newTextInput.
@@ -259,17 +294,18 @@ SpFairyTaleGUI >> showDetails: aTale [
 
 { #category : 'initialization' }
 SpFairyTaleGUI >> updateFieldsVisibility [
-	| type |
-	type := typeDropdown selectedItem ifNil: [ '' ].
+    | type |
+    type := typeDropdown selectedItem ifNil: [ '' ].
 
-	(type = 'StoryBook')
-		ifTrue: [
-			pagesInput visible: true.
-			illustrationsInput visible: true.
-		]
-		ifFalse: [
-			pagesInput visible: false.
-			illustrationsInput visible: false.
-		].
+    pagesInput visible: false.
+    illustrationsInput visible: false.
+    pagesPerVolumeInput visible: false.
+
+    (type = 'StoryBook') ifTrue: [
+        pagesInput visible: true.
+        illustrationsInput visible: true ].
+
+    (type = 'TaleCollection') ifTrue: [
+        pagesPerVolumeInput visible: true ].
 
 ]
