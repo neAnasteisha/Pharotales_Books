@@ -1,0 +1,200 @@
+Transcript show: '1. Створення бібліотеки'; cr.
+
+library := Library named: 'Бібліотека №73'.
+Transcript show: 'Створено: ', library description; cr.
+
+Transcript cr; show: '2. Додавання книг до бібліотеки'; cr.
+
+book1 := StoryBook new
+    author: 'Ганс Крістіан Андерсен';
+    title: 'Снігова королева';
+    publisher: 'Дитяча література';
+    publicationYear: 1844;
+    pages: 95;
+    illustrations: 40;
+    yourself.
+
+book2 := StoryBook new
+    author: 'Редьярд Кіплінг';
+    title: 'Книга джунглів';
+    publisher: 'Класика';
+    publicationYear: 1894;
+    pages: 180;
+    illustrations: 25;
+    yourself.
+
+book3 := StoryBook new
+    author: 'Брати Грімм';
+    title: 'Білосніжка';
+    publisher: 'Казкова книга';
+    publicationYear: 1812;
+    pages: 120;
+    illustrations: 30;
+    yourself.
+
+tale1 := TaleCollection new
+    author: 'Ганс Крістіан Андерсен';
+    title: 'Гидке каченя';
+    publisher: 'Збірник';
+    publicationYear: 1852;
+    pagesPerVolume: #(120 95 140);
+    yourself.
+
+tale2 := TaleCollection new
+    author: 'Шарль Перро';
+    title: 'Попелюшка';
+    publisher: 'Класика';
+    publicationYear: 1697;
+    pagesPerVolume: #(250);
+    yourself.
+
+tale3 := TaleCollection new
+    author: 'Вільгельм та Якоб Грімм';
+    title: 'Рапунцель';
+    publisher: 'Старовинні казки';
+    publicationYear: 1812;
+    pagesPerVolume: #(200 185 210 195);
+    yourself.
+
+"Додавання книг (деякі у кількох примірниках)"
+library addBook: book1 copies: 3.
+Transcript show: 'Додано 3 екземпляри: ', book1 title; cr.
+
+library addBook: book2 copies: 2.
+Transcript show: 'Додано 2 екземпляри: ', book2 title; cr.
+
+library addBook: book3.
+Transcript show: 'Додано 1 екземпляр: ', book3 title; cr.
+
+library addBook: tale1 copies: 2.
+Transcript show: 'Додано 2 екземпляри: ', tale1 title; cr.
+
+library addBook: tale2.
+Transcript show: 'Додано 1 екземпляр: ', tale2 title; cr.
+
+library addBook: tale3 copies: 4.
+Transcript show: 'Додано 4 екземпляри: ', tale3 title; cr.
+
+Transcript cr; show: 'Всього книг у бібліотеці: ', library totalCopies printString; cr.
+Transcript show: 'Унікальних назв: ', library uniqueTitles size printString; cr.
+
+Transcript cr; show: '3. Каталог бібліотеки'; cr.
+library printCatalog.
+
+Transcript cr; show: '4. Пошук за автором'; cr.
+
+andersenBooks := library booksByAuthor: 'Андерсен'.
+Transcript show: 'Книги Андерсена (знайдено ', andersenBooks size printString, ' екз.):'; cr.
+andersenBooks do: [ :book |
+    Transcript show: '  • ', book title, ' (', book publicationYear printString, ')'; cr ].
+
+grimmBooks := library booksByAuthor: 'Грімм'.
+Transcript show: 'Книги братів Грімм (знайдено ', grimmBooks size printString, ' екз.):'; cr.
+grimmBooks do: [ :book |
+    Transcript show: '  • ', book title, ' (', book publicationYear printString, ')'; cr ].
+
+Transcript cr; show: '5. Пошук за видавництвом'; cr.
+
+klasikaBooks := library booksByPublisher: 'Класика'.
+Transcript show: 'Книги видавництва "Класика": ', klasikaBooks size printString, ' екз.'; cr.
+klasikaBooks do: [ :book |
+    Transcript show: '  • ', book title; cr ].
+
+Transcript cr; show: '6. Пошук за роком видання'; cr.
+
+books1812 := library booksByYear: 1812.
+Transcript show: 'Книги 1812 року: ', books1812 size printString, ' екз.'; cr.
+books1812 do: [ :book |
+    Transcript show: '  • ', book title, ' - ', book author; cr ].
+
+Transcript cr; show: '7. Пошук за ключовим словом'; cr.
+
+snowBooks := library searchByKeyword: 'Снігова'.
+Transcript show: 'Результат пошуку "Снігова": ', snowBooks size printString, ' екз.'; cr.
+
+queenBooks := library searchByKeyword: 'королева'.
+Transcript show: 'Результат пошуку "королева": ', queenBooks size printString, ' екз.'; cr.
+
+Transcript cr; show: '8. Статистика бібліотеки'; cr.
+library printStatistics.
+
+Transcript cr; show: '9. Звіти за категоріями'; cr.
+
+library printCategoryReport: StoryBook.
+Transcript cr.
+library printCategoryReport: TaleCollection.
+
+Transcript cr; show: '10. Найстаріша книга'; cr.
+
+oldest := library oldestBook.
+Transcript show: 'Найстаріша книга в бібліотеці:'; cr.
+Transcript show: '  Назва: ', oldest title; cr.
+Transcript show: '  Автор: ', oldest author; cr.
+Transcript show: '  Рік: ', oldest publicationYear printString; cr.
+Transcript show: '  Вік: ', (Date today year - oldest publicationYear) printString, ' років'; cr.
+
+Transcript cr; show: '11. Підрахунок друкованих аркушів'; cr.
+
+totalSheets := library totalPrintedSheets.
+Transcript show: 'Загальна кількість друкованих аркушів усіх книг:'; cr.
+Transcript show: '  ', (totalSheets printShowingDecimalPlaces: 2), ' аркушів'; cr.
+Transcript show: '  або ~', totalSheets ceiling printString, ' аркушів (округлення до більшого)'; cr.
+
+Transcript cr; show: '12. Заміна старого видання на нове'; cr.
+
+Transcript show: 'До заміни - екземплярів "Снігова королева": ', 
+    (library copiesOf: book1) printString; cr.
+
+newEdition := StoryBook new
+    author: 'Ганс Крістіан Андерсен';
+    title: 'Снігова королева';
+    publisher: 'Сучасна література';
+    publicationYear: 2020;
+    pages: 110;
+    illustrations: 55;
+    yourself.
+
+replaced := library replaceOldEdition: book1 withNewEdition: newEdition keepCopies: 1.
+Transcript show: 'Замінено: ', replaced printString, ' екземплярів'; cr.
+Transcript show: 'Залишено старих: 1 екземпляр (для архіву)'; cr.
+Transcript show: 'Після заміни - всього екземплярів: ', library totalCopies printString; cr.
+
+Transcript cr; show: '13. Видалення книги'; cr.
+
+Transcript show: 'До видалення: ', library totalCopies printString, ' екземплярів'; cr.
+
+removed := library removeBook: tale2.
+Transcript show: 'Видалено "', tale2 title, '": ', removed printString; cr.
+Transcript show: 'Після видалення: ', library totalCopies printString, ' екземплярів'; cr.
+
+Transcript cr; show: '14. Підрахунок за типами'; cr.
+
+Transcript show: 'FairyTale (всього): ', (library countByType: FairyTale) printString; cr.
+Transcript show: 'StoryBook: ', (library countByType: StoryBook) printString; cr.
+Transcript show: 'TaleCollection: ', (library countByType: TaleCollection) printString; cr.
+
+Transcript cr; show: '15. Пошук з довільним критерієм'; cr.
+
+illustratedBooks := library findBooksMatching: [ :book |
+    (book isKindOf: StoryBook) and: [ book illustrations > 30 ] ].
+Transcript show: 'Книги з >30 ілюстраціями: ', illustratedBooks size printString; cr.
+illustratedBooks do: [ :book |
+    Transcript show: '  • ', book title, ' (', book illustrations printString, ' іл.)'; cr ].
+
+multiVolumeBooks := library findBooksMatching: [ :book |
+    (book isKindOf: TaleCollection) and: [ book volumes > 2 ] ].
+Transcript show: 'Багатотомні видання (>2 томів): ', multiVolumeBooks size printString; cr.
+multiVolumeBooks do: [ :book |
+    Transcript show: '  • ', book title, ' (', book volumes printString, ' томів)'; cr ].
+
+Transcript cr; show: '16. Видалення старих книг'; cr.
+
+booksRemoved := library removeBooksOlderThan: 1850.
+Transcript show: 'Видалено книг старших за 1850 рік: ', booksRemoved printString; cr.
+Transcript show: 'Залишилось у бібліотеці: ', library totalCopies printString, ' екземплярів'; cr.
+
+Transcript cr; show: '17. Фінальна статистика'; cr.
+library printStatistics.
+
+"library save."
+"Transcript show: 'Бібліотеку збережено до бази даних'; cr."
